@@ -7,6 +7,7 @@ import {
   LanguagesQueryData
 } from "./graphql/queries/Languages";
 import { Language } from './graphql/generated/types';
+import store from 'store';
 
 const {
   REACT_APP_DEFAULT_LANGUAGE_ID: defaultLanguageId
@@ -21,7 +22,7 @@ type Props = typeof mapDispatchToProps;
 
 const Startup: FunctionComponent<Props> = ({ children, updateLanguage,  updateLanguages }) => {
 
-  updateLanguage(defaultLanguageId || '');
+  updateLanguage(store.get('languageId') || defaultLanguageId || '');
 
   function onLanguagesQueryCompleted(data: LanguagesQueryData) {
     updateLanguages(data.languages);
