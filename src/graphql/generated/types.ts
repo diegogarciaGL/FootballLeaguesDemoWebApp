@@ -80,7 +80,7 @@ export type Player = {
   position?: Maybe<Scalars['String']>,
   nationality?: Maybe<Scalars['String']>,
   teamId: Scalars['String'],
-  team: Team,
+  team?: Maybe<Team>,
 };
 
 export type PlayerInput = {
