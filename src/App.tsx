@@ -6,7 +6,10 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
+
+// UI Components
 import Startup from './Startup';
+import Menu from './components/Menu';
 
 // Pages
 import Home from './pages/Home/Home';
@@ -43,12 +46,13 @@ const App: React.FC = () => (
       <Startup>
         <Router>
           <div id="app">
-          <Switch>
-            <Route path="/" exact component={Home} />
-            <Route path="/league/:leagueId?" component={League} />
-            <Route path="/team/:teamId?" component={Team} />
-            {/* <Route component={NotFound} /> */}
-          </Switch>
+            <Menu />
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/league/:leagueId?" component={League} />
+              <Route path="/team/:teamId?" component={Team} />
+              {/* <Route component={NotFound} /> */}
+            </Switch>
           </div>
         </Router>
       </Startup>
