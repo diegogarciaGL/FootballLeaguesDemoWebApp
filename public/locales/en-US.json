@@ -1,0 +1,13 @@
+{
+  "pages": {
+    "home": {
+      "title": "Leagues"
+    },
+    "league": {
+      "title": "Teams"
+    },
+    "team": {
+      "title": "Players"
+    }
+  }
+}
