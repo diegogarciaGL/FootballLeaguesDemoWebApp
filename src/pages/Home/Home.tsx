@@ -32,8 +32,6 @@ import useStyles from "./HomeStyles";
 import { useTheme } from "@material-ui/core/styles";
 
 const mapStateToProps = (state: RootState) => ({
-  // language: state.localization.language,
-  // languageId: state.localization.languageId,
   languages: state.localization.languages,
   localize: (key: string) => selectors.localization.localize(state.localization, key)
 });
@@ -108,7 +106,22 @@ const Home: FunctionComponent<Props> = ({
           paper: classes.drawerPaper
         }}
       >
-        <div className={classes.drawerHeader}>
+        <Toolbar>
+          <Typography>
+            {localize('components.mainMenu.language')}
+          </Typography>
+          <IconButton onClick={handleDrawerClose} color="inherit" className={classes.drawerButton}>
+            {theme.direction === "ltr" ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </Toolbar>
+        {/* <div className={classes.drawerHeader}>
+          <Typography className={classes.drawerHeaderTitle}>
+            {localize('components.mainMenu.language')}
+          </Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
@@ -116,7 +129,7 @@ const Home: FunctionComponent<Props> = ({
               <ChevronRightIcon />
             )}
           </IconButton>
-        </div>
+        </div> */}
         <Divider />
         <List>
           {languages.map(l => (

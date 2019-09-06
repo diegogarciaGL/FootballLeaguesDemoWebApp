@@ -40,6 +40,10 @@ const useStyles = makeStyles(theme => ({
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
   },
+  drawerButton: {
+    marginLeft: 'auto',
+    order: 2
+  },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
