@@ -26,15 +26,15 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      authorization: token ? `Bearer ${token}` : ''
     }
-  }
+  };
 });
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
   uri: process.env.REACT_APP_GRAPHQL_API_URL
-})
+});
 const client = new ApolloClient({
   cache,
   link: authLink.concat(link)
@@ -58,6 +58,6 @@ const App: React.FC = () => (
       </Startup>
     </Provider>
   </ApolloProvider>
-)
+);
 
 export default App;

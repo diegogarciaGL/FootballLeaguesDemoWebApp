@@ -1,20 +1,20 @@
-import React, { FunctionComponent } from "react";
-import { connect } from "react-redux";
-import { useQuery } from "@apollo/react-hooks";
-import { TEAMS_QUERY, TeamsQueryData } from "../../graphql/queries/Teams";
-import { withRouter, RouteComponentProps } from "react-router";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import { RootState, selectors } from "../../store";
+import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
+import { useQuery } from '@apollo/react-hooks';
+import { TEAMS_QUERY, TeamsQueryData } from '../../graphql/queries/Teams';
+import { withRouter, RouteComponentProps } from 'react-router';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { RootState, selectors } from '../../store';
 
 const mapStateToProps = (state: RootState) => ({
   localize: (key: string) =>
@@ -45,12 +45,12 @@ const League: FunctionComponent<Props> = ({
             color="inherit"
             edge="start"
             onClick={() => {
-              history.push("/");
+              history.push('/');
             }}
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h6">{localize("pages.league.title")}</Typography>
+          <Typography variant="h6">{localize('pages.league.title')}</Typography>
         </Toolbar>
       </AppBar>
       <List>
@@ -59,7 +59,7 @@ const League: FunctionComponent<Props> = ({
             <ListItem
               key={t._id}
               button
-              onClick={e => {
+              onClick={() => {
                 history.push(`/team/${t._id}`);
               }}
             >
