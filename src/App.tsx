@@ -1,12 +1,15 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
+
+// UI Components
 import Startup from './Startup';
+import Menu from './components/Menu';
 
 // Pages
 import Home from './pages/Home/Home';
@@ -23,15 +26,15 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      authorization: token ? `Bearer ${token}` : ''
     }
-  }
+  };
 });
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
   uri: process.env.REACT_APP_GRAPHQL_API_URL
-})
+});
 const client = new ApolloClient({
   cache,
   link: authLink.concat(link)
@@ -43,17 +46,18 @@ const App: React.FC = () => (
       <Startup>
         <Router>
           <div id="app">
-          <Switch>
-            <Route path="/" exact component={Home} />
-            <Route path="/league/:leagueId?" component={League} />
-            <Route path="/team/:teamId?" component={Team} />
-            {/* <Route component={NotFound} /> */}
-          </Switch>
+            <Menu />
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/league/:leagueId?" component={League} />
+              <Route path="/team/:teamId?" component={Team} />
+              {/* <Route component={NotFound} /> */}
+            </Switch>
           </div>
         </Router>
       </Startup>
     </Provider>
   </ApolloProvider>
-)
+);
 
 export default App;

@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import localization from './localization/reducer';
+import menu from './menu/reducer';
 
 const rootReducer = combineReducers({
-  localization
+  localization,
+  menu
 });
 
 export default rootReducer;

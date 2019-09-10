@@ -13,15 +13,14 @@
     "@types/react-redux": "7.1.2",
     "@types/react-router": "5.0.3",
     "@types/react-router-dom": "4.3.5",
+    "@types/store": "2.0.2",
     "apollo-cache-inmemory": "1.6.3",
     "apollo-client": "2.6.4",
     "apollo-link-context": "1.0.18",
     "apollo-link-http": "1.5.15",
     "dotenv": "8.1.0",
-    "eslint-utils": "1.4.1",
     "graphql": "14.5.4",
     "react": "^16.9.0",
-    "react-apollo": "3.0.1",
     "react-app-rewired": "2.1.3",
     "react-dom": "^16.9.0",
     "react-redux": "7.1.1",
@@ -29,6 +28,7 @@
     "react-router-dom": "5.0.1",
     "react-scripts": "3.1.1",
     "redux": "4.0.4",
+    "store": "2.0.12",
     "typesafe-actions": "4.4.2",
     "typescript": "3.6.2"
   },
@@ -38,11 +38,9 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path .gitignore '**/*.tsx'",
+    "lint:fix": "eslint './src/**/*.{ts,tsx}'",
     "generate-gql-types": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config graphqlcodegen.yml",
     "postinstall": "react-scripts build"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -58,6 +56,12 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.7.0",
-    "@graphql-codegen/typescript": "1.7.0"
+    "@graphql-codegen/typescript": "1.7.0",
+    "@typescript-eslint/eslint-plugin": "2.2.0",
+    "@typescript-eslint/parser": "2.2.0",
+    "eslint-config-prettier": "6.3.0",
+    "eslint-config-react": "1.1.7",
+    "eslint-plugin-prettier": "3.1.0",
+    "prettier": "1.18.2"
   }
 }

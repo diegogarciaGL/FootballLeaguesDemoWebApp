@@ -9,5 +9,10 @@
     "team": {
       "title": "Jugadores"
     }
+  },
+  "components": {
+    "mainMenu": {
+      "language": "Idioma"
+    }
   }
 }
