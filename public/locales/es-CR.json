@@ -14,5 +14,9 @@
     "mainMenu": {
       "language": "Idioma"
     }
+  },
+  "buttons": {
+    "cancel": "Cancelar",
+    "save": "Guardar"
   }
 }

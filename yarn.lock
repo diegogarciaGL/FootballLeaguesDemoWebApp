@@ -2,20 +2,20 @@
 # yarn lockfile v1
 
 
-"@apollo/react-common@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@apollo/react-common/-/react-common-3.0.1.tgz#9c8f1433ddaddf80e471259126a76f1738dd4273"
-  integrity sha512-7SC4qqPFo/41AhaQKCRovIshKkm4JLEGXyRHi+NPsaNJyk2J/HrWREnlHVqoPzYeIyq33f1L6j/NAkKn1NOnnQ==
+"@apollo/react-common@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@apollo/react-common/-/react-common-3.1.1.tgz#540619d8276d750ce4f381c9cf8f51a6f657f75d"
+  integrity sha512-lMiczOm4sD16eI9Ai+AUY+Jl3C/FNm4IpoZiAbe35TqMuD7HpZ4OJmXAbT3CzfrAqsKK8+rHgRvTiPI2kQjIWg==
   dependencies:
     ts-invariant "^0.4.4"
     tslib "^1.10.0"
 
-"@apollo/react-hooks@3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@apollo/react-hooks/-/react-hooks-3.0.1.tgz#83869beddcbb06cba05d50ccf05097191d245a9c"
-  integrity sha512-Boai/T+2z3m23Gy82m1pB+FOlrhkBJ//EIYa3pqX9sUsvgRWMKC+3NxpeHEUYqsf0qzFiM1dO4Pn9OxCFstM8g==
+"@apollo/react-hooks@3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@apollo/react-hooks/-/react-hooks-3.1.1.tgz#8e5a0f281a9778aaf17496ad38a178d23375077c"
+  integrity sha512-LwE4olNlKwqh1hl6iHr/igSDGRVs7c6Ik5MYZm9TzGj01f+ebhM1+Pn+UBNLsb3uRuytZsUOsEDBEXMABzC9Tw==
   dependencies:
-    "@apollo/react-common" "^3.0.1"
+    "@apollo/react-common" "^3.1.1"
     "@wry/equality" "^0.1.9"
     ts-invariant "^0.4.4"
     tslib "^1.10.0"

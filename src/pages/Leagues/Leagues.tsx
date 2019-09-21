@@ -1,6 +1,12 @@
-import React, { FunctionComponent, MouseEvent } from 'react';
+import React, {
+  FunctionComponent,
+  MouseEvent,
+  useState,
+  useEffect,
+  useRef
+} from 'react';
 import { connect } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 import { RootState, selectors, actions } from '../../store';
 import { LEAGUES_QUERY, LeaguesQueryData } from '../../graphql/queries/Leagues';
 import { League } from '../../graphql/generated/types';
@@ -18,8 +24,15 @@ import Avatar from '@material-ui/core/Avatar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import IconButton from '@material-ui/core/IconButton';
 
+// Custom Components
+import LeagueForm from '../League/LeagueForm';
+
 // Icons
 import MenuIcon from '@material-ui/icons/Menu';
+import AddIcon from '@material-ui/icons/Add';
+
+// Styles
+import useStyles from './LeaguesStyles';
 
 const mapStateToProps = (state: RootState) => ({
   localize: (key: string) =>
@@ -34,19 +47,47 @@ type Props = ReturnType<typeof mapStateToProps> &
   RouteComponentProps<{}> &
   typeof mapDispatchToProps;
 
-const Home: FunctionComponent<Props> = ({ history, localize, toggleMenu }) => {
-  function onLeagueClick(e: MouseEvent, league: League) {
+const Leagues: FunctionComponent<Props> = ({
+  history,
+  localize,
+  toggleMenu
+}) => {
+  const classes = useStyles();
+  const listMounted = useRef<boolean>(false);
+  const [isNewLeagueOpen, setIsNewLeagueOpen] = useState(false);
+  const [loadLeaguesQuery, { loading, error, data }] = useLazyQuery<
+    LeaguesQueryData
+  >(LEAGUES_QUERY, { fetchPolicy: 'cache-and-network' });
+
+  const onLeagueClick = (e: MouseEvent, league: League) => {
     e.stopPropagation();
     history.push(`/league/${league._id}`);
-  }
+  };
 
-  function handleDrawerOpen() {
+  const handleDrawerOpen = () => {
     toggleMenu();
-  }
+  };
 
-  const { loading, error, data } = useQuery<LeaguesQueryData>(LEAGUES_QUERY);
-  if (loading) return <LinearProgress />;
-  if (error) return <p>Error</p>;
+  const onAddClick = () => {
+    setIsNewLeagueOpen(true);
+  };
+
+  const onNewLeagueFormClose = () => {
+    setIsNewLeagueOpen(false);
+  };
+
+  const onLeagueSaved = () => {
+    loadLeaguesQuery();
+  };
+
+  useEffect(() => {
+    if (!listMounted.current) {
+      listMounted.current = true;
+      loadLeaguesQuery();
+      return;
+    }
+  });
+
   return (
     <>
       <AppBar position="static">
@@ -59,9 +100,27 @@ const Home: FunctionComponent<Props> = ({ history, localize, toggleMenu }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">{localize('pages.home.title')}</Typography>
+          <Typography variant="h6" noWrap>
+            {localize('pages.home.title')}
+          </Typography>
+          <div className={classes.grow} />
+          <IconButton
+            color="inherit"
+            aria-label="add league"
+            onClick={onAddClick}
+            edge="end"
+          >
+            <AddIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
+      <LeagueForm
+        isOpen={isNewLeagueOpen}
+        onClose={onNewLeagueFormClose}
+        onLeagueSaved={onLeagueSaved}
+      />
+      {loading && <LinearProgress />}
+      {!loading && error ? <p>Error</p> : <></>}
       <List>
         {data &&
           data.leagues.map(l => (
@@ -87,5 +146,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Home)
+  )(Leagues)
 );

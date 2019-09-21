@@ -14,5 +14,9 @@
     "mainMenu": {
       "language": "Language"
     }
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "save": "Save"
   }
 }
