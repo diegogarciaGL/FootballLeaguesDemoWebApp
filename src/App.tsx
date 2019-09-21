@@ -12,7 +12,7 @@ import Startup from './Startup';
 import Menu from './components/Menu';
 
 // Pages
-import Home from './pages/Home/Home';
+import Leagues from './pages/Leagues/Leagues';
 import League from './pages/League/League';
 import Team from './pages/Team/Team';
 
@@ -48,7 +48,7 @@ const App: React.FC = () => (
           <div id="app">
             <Menu />
             <Switch>
-              <Route path="/" exact component={Home} />
+              <Route path="/" exact component={Leagues} />
               <Route path="/league/:leagueId?" component={League} />
               <Route path="/team/:teamId?" component={Team} />
               {/* <Route component={NotFound} /> */}

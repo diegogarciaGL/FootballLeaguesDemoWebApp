@@ -12,7 +12,7 @@ const LANGUAGES_QUERY = gql`
 `;
 
 type LanguagesQueryDataType = {
-  languages: Language[]
+  languages: Language[];
 };
 
 export type LanguagesQueryData = LanguagesQueryDataType;
@@ -21,6 +21,4 @@ export type LanguagesQueryData = LanguagesQueryDataType;
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
-export {
-  LANGUAGES_QUERY
-};
+export { LANGUAGES_QUERY };

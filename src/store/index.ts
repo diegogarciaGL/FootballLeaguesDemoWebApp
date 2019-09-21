@@ -11,6 +11,7 @@ import * as localizationSelectors from './localization/selectors';
 // Actions
 import * as localizationActions from './localization/actions';
 import * as menuActions from './menu/actions';
+import * as applicationActions from './application/actions';
 
 export { default } from './store';
 export { default as rootReducer } from './root-reducer';
@@ -21,11 +22,10 @@ export const selectors = {
 
 export const actions = {
   localization: localizationActions,
-  menu: menuActions
-}
+  menu: menuActions,
+  application: applicationActions
+};
 
-export const middlewares: Middleware[] = [
-  fetchLanguageMiddleware
-]
+export const middlewares: Middleware[] = [fetchLanguageMiddleware];
 
 export type RootState = StateType<typeof rootReducer>;

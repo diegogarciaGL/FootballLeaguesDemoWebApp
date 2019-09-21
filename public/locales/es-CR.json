@@ -12,7 +12,13 @@
   },
   "components": {
     "mainMenu": {
-      "language": "Idioma"
+      "language": "Idioma",
+      "showLeaguesSecondaryList": "Lista ligas secundaria",
+      "showLeaguesOnMenu": "Ligas en menú"
     }
+  },
+  "buttons": {
+    "cancel": "Cancelar",
+    "save": "Guardar"
   }
 }

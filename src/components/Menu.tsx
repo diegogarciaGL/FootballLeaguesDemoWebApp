@@ -13,6 +13,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Checkbox from '@material-ui/core/Checkbox';
+
+// Custom components
+import LeaguesList from './LeaguesList';
 
 // Icons
 import CloseIcon from '@material-ui/icons/Close';
@@ -20,12 +25,17 @@ import CloseIcon from '@material-ui/icons/Close';
 const mapStateToProps = (state: RootState) => ({
   open: state.menu.open,
   languages: state.localization.languages,
+  showLeaguesSecondaryList: state.application.showLeaguesSecondaryList,
+  showLeaguesOnMenu: state.application.showLeaguesOnMenu,
   localize: (key: string) =>
     selectors.localization.localize(state.localization, key)
 });
 
 const mapDispatchToProps = {
   toggleMenu: () => actions.menu.toggleMenu(),
+  toggleLeaguesSecondaryList: () =>
+    actions.application.toggleLeaguesSecondaryList(),
+  toggleLeaguesOnMenu: () => actions.application.toggleLeaguesOnMenu(),
   updateLanguage: (languageId: string) =>
     actions.localization.updateLanguage(languageId)
 };
@@ -47,18 +57,30 @@ const Menu: FunctionComponent<Props> = ({
   localize,
   languages,
   toggleMenu,
-  updateLanguage
+  updateLanguage,
+  showLeaguesSecondaryList,
+  toggleLeaguesSecondaryList,
+  showLeaguesOnMenu,
+  toggleLeaguesOnMenu
 }) => {
   const classes = useStyles();
 
-  function handleDrawerClose() {
+  const handleDrawerClose = () => {
     toggleMenu();
-  }
+  };
 
-  function onLanguageClick(e: MouseEvent, language: Language) {
+  const onLanguageClick = (e: MouseEvent, language: Language) => {
     updateLanguage(language.languageId);
     toggleMenu();
-  }
+  };
+
+  const onShowLeaguesSecondaryListClick = () => {
+    toggleLeaguesSecondaryList();
+  };
+
+  const onShowLeaguesOnMenuClick = () => {
+    toggleLeaguesOnMenu();
+  };
 
   return (
     <SwipeableDrawer open={open} onOpen={toggleMenu} onClose={toggleMenu}>
@@ -80,6 +102,35 @@ const Menu: FunctionComponent<Props> = ({
           </ListItem>
         ))}
       </List>
+      <Divider />
+      <List className={classes.list}>
+        <ListItem
+          button
+          key={'showLeaguesSecondaryList'}
+          onClick={onShowLeaguesSecondaryListClick}
+        >
+          <ListItemText
+            primary={localize('components.mainMenu.showLeaguesSecondaryList')}
+          />
+          <ListItemIcon>
+            <Checkbox edge="end" checked={showLeaguesSecondaryList} />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          button
+          key={'showLeaguesOnMenu'}
+          onClick={onShowLeaguesOnMenuClick}
+        >
+          <ListItemText
+            primary={localize('components.mainMenu.showLeaguesOnMenu')}
+          />
+          <ListItemIcon>
+            <Checkbox edge="end" checked={showLeaguesOnMenu} />
+          </ListItemIcon>
+        </ListItem>
+      </List>
+      <Divider />
+      {showLeaguesOnMenu && <LeaguesList fetchPolicy={'cache-only'} />}
     </SwipeableDrawer>
   );
 };

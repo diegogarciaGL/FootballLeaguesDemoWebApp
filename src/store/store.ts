@@ -2,11 +2,11 @@ import { createStore, applyMiddleware, compose, Middleware } from 'redux';
 import { fetchLanguageMiddleware } from './localization/middleware';
 import rootReducer from './root-reducer';
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const middlewares: Middleware[] = [
-  fetchLanguageMiddleware
-];
+const middlewares: Middleware[] = [fetchLanguageMiddleware];
 
 function configureStore(initialState?: {}) {
   return createStore(
