@@ -23,9 +23,11 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
 
 // Custom Components
 import LeagueForm from '../League/LeagueForm';
+import LeaguesList from '../../components/LeaguesList';
 
 // Icons
 import MenuIcon from '@material-ui/icons/Menu';
@@ -35,6 +37,7 @@ import AddIcon from '@material-ui/icons/Add';
 import useStyles from './LeaguesStyles';
 
 const mapStateToProps = (state: RootState) => ({
+  showLeaguesSecondaryList: state.application.showLeaguesSecondaryList,
   localize: (key: string) =>
     selectors.localization.localize(state.localization, key)
 });
@@ -50,7 +53,8 @@ type Props = ReturnType<typeof mapStateToProps> &
 const Leagues: FunctionComponent<Props> = ({
   history,
   localize,
-  toggleMenu
+  toggleMenu,
+  showLeaguesSecondaryList
 }) => {
   const classes = useStyles();
   const listMounted = useRef<boolean>(false);
@@ -121,23 +125,34 @@ const Leagues: FunctionComponent<Props> = ({
       />
       {loading && <LinearProgress />}
       {!loading && error ? <p>Error</p> : <></>}
-      <List>
-        {data &&
-          data.leagues.map(l => (
-            <ListItem
-              key={l._id}
-              button
-              onClick={e => {
-                onLeagueClick(e, l);
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar alt="logo" />
-              </ListItemAvatar>
-              <ListItemText primary={l.name} secondary={l.country} />
-            </ListItem>
-          ))}
-      </List>
+      <div className={classes.grow}>
+        <Grid container spacing={1}>
+          <Grid item xs={showLeaguesSecondaryList ? 6 : 12}>
+            <List>
+              {data &&
+                data.leagues.map(l => (
+                  <ListItem
+                    key={l._id}
+                    button
+                    onClick={e => {
+                      onLeagueClick(e, l);
+                    }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar alt="logo" />
+                    </ListItemAvatar>
+                    <ListItemText primary={l.name} secondary={l.country} />
+                  </ListItem>
+                ))}
+            </List>
+          </Grid>
+          {showLeaguesSecondaryList && (
+            <Grid item xs={6}>
+              <LeaguesList fetchPolicy={'cache-only'} />
+            </Grid>
+          )}
+        </Grid>
+      </div>
     </>
   );
 };

@@ -12,7 +12,9 @@
   },
   "components": {
     "mainMenu": {
-      "language": "Language"
+      "language": "Language",
+      "showLeaguesSecondaryList": "Leagues secondary list",
+      "showLeaguesOnMenu": "Leagues on menu"
     }
   },
   "buttons": {
