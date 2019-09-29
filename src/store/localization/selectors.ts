@@ -1,7 +1,7 @@
 import { LocalizationState } from './types';
 import { Language } from '../../graphql/generated/types';
 
-export function localize(state: LocalizationState, key: string): any | null | undefined {
+export function localize(state: LocalizationState, key: string): string {
   if (state.language && key) {
     const keys = key.split('.');
     const kNum = keys.length;
@@ -21,7 +21,9 @@ export function localize(state: LocalizationState, key: string): any | null | un
   return '';
 }
 
-export function availableUnselectedLanguages(state: LocalizationState): Language[] {
+export function availableUnselectedLanguages(
+  state: LocalizationState
+): Language[] {
   const { languageId: currentLanguageId } = state;
   return state.languages.filter(l => l.languageId !== currentLanguageId);
 }
