@@ -3,14 +3,18 @@ import React, {
   MouseEvent,
   useState,
   useEffect,
-  useRef
+  useRef,
+  useContext
 } from 'react';
-import { connect } from 'react-redux';
 import { useLazyQuery } from '@apollo/react-hooks';
-import { RootState, selectors, actions } from '../../store';
 import { LEAGUES_QUERY, LeaguesQueryData } from '../../graphql/queries/Leagues';
 import { League } from '../../graphql/generated/types';
 import { withRouter, RouteComponentProps } from 'react-router';
+
+// Contexts
+import { LocalizationContext } from '../../state/localization/context';
+import { MenuContext } from '../../state/menu/context';
+import { ApplicationContext } from '../../state/application/context';
 
 // UI components
 import AppBar from '@material-ui/core/AppBar';
@@ -36,26 +40,15 @@ import AddIcon from '@material-ui/icons/Add';
 // Styles
 import useStyles from './LeaguesStyles';
 
-const mapStateToProps = (state: RootState) => ({
-  showLeaguesSecondaryList: state.application.showLeaguesSecondaryList,
-  localize: (key: string) =>
-    selectors.localization.localize(state.localization, key)
-});
+type Props = RouteComponentProps<{}>;
 
-const mapDispatchToProps = {
-  toggleMenu: () => actions.menu.toggleMenu()
-};
-
-type Props = ReturnType<typeof mapStateToProps> &
-  RouteComponentProps<{}> &
-  typeof mapDispatchToProps;
-
-const Leagues: FunctionComponent<Props> = ({
-  history,
-  localize,
-  toggleMenu,
-  showLeaguesSecondaryList
-}) => {
+const Leagues: FunctionComponent<Props> = ({ history }) => {
+  const localizationContext = useContext(LocalizationContext);
+  const { localize } = localizationContext;
+  const menuContext = useContext(MenuContext);
+  const { toggleMenu } = menuContext;
+  const applicationContext = useContext(ApplicationContext);
+  const { showLeaguesSecondaryList } = applicationContext;
   const classes = useStyles();
   const listMounted = useRef<boolean>(false);
   const [isNewLeagueOpen, setIsNewLeagueOpen] = useState(false);
@@ -157,9 +150,4 @@ const Leagues: FunctionComponent<Props> = ({
   );
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Leagues)
-);
+export default withRouter(Leagues);
