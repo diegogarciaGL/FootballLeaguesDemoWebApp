@@ -1,12 +1,6 @@
-import React, {
-  FunctionComponent,
-  MouseEvent,
-  useState,
-  useEffect,
-  useRef
-} from 'react';
+import React, { Component, MouseEvent } from 'react';
 import { connect } from 'react-redux';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { Query } from '@apollo/react-components';
 import { RootState, selectors, actions } from '../../store';
 import { LEAGUES_QUERY, LeaguesQueryData } from '../../graphql/queries/Leagues';
 import { League } from '../../graphql/generated/types';
@@ -34,7 +28,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AddIcon from '@material-ui/icons/Add';
 
 // Styles
-import useStyles from './LeaguesStyles';
+import './LeaguesStyles.css';
 
 const mapStateToProps = (state: RootState) => ({
   showLeaguesSecondaryList: state.application.showLeaguesSecondaryList,
@@ -46,116 +40,129 @@ const mapDispatchToProps = {
   toggleMenu: () => actions.menu.toggleMenu()
 };
 
+type State = {
+  isNewLeagueOpen: boolean;
+  isLoading: boolean;
+};
+
 type Props = ReturnType<typeof mapStateToProps> &
   RouteComponentProps<{}> &
   typeof mapDispatchToProps;
 
-const Leagues: FunctionComponent<Props> = ({
-  history,
-  localize,
-  toggleMenu,
-  showLeaguesSecondaryList
-}) => {
-  const classes = useStyles();
-  const listMounted = useRef<boolean>(false);
-  const [isNewLeagueOpen, setIsNewLeagueOpen] = useState(false);
-  const [loadLeaguesQuery, { loading, error, data }] = useLazyQuery<
-    LeaguesQueryData
-  >(LEAGUES_QUERY, { fetchPolicy: 'cache-and-network' });
+class Leagues extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isNewLeagueOpen: false,
+      isLoading: true
+    };
+  }
 
-  const onLeagueClick = (e: MouseEvent, league: League) => {
+  onLeagueClick = (e: MouseEvent, league: League) => {
     e.stopPropagation();
+    const { history } = this.props;
     history.push(`/league/${league._id}`);
   };
 
-  const handleDrawerOpen = () => {
+  onQueryCompleted = () => {
+    this.setState({ isLoading: false });
+  };
+
+  handleDrawerOpen = () => {
+    const { toggleMenu } = this.props;
     toggleMenu();
   };
 
-  const onAddClick = () => {
-    setIsNewLeagueOpen(true);
+  onAddClick = () => {
+    this.setState({ isNewLeagueOpen: true });
   };
 
-  const onNewLeagueFormClose = () => {
-    setIsNewLeagueOpen(false);
+  onNewLeagueFormClose = () => {
+    this.setState({ isNewLeagueOpen: false });
   };
 
-  const onLeagueSaved = () => {
-    loadLeaguesQuery();
+  onLeagueSaved = () => {
+    //loadLeaguesQuery();
   };
 
-  useEffect(() => {
-    if (!listMounted.current) {
-      listMounted.current = true;
-      loadLeaguesQuery();
-      return;
-    }
-  });
-
-  return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            {localize('pages.home.title')}
-          </Typography>
-          <div className={classes.grow} />
-          <IconButton
-            color="inherit"
-            aria-label="add league"
-            onClick={onAddClick}
-            edge="end"
-          >
-            <AddIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <LeagueForm
-        isOpen={isNewLeagueOpen}
-        onClose={onNewLeagueFormClose}
-        onLeagueSaved={onLeagueSaved}
-      />
-      {loading && <LinearProgress />}
-      {!loading && error ? <p>Error</p> : <></>}
-      <div className={classes.grow}>
-        <Grid container spacing={1}>
-          <Grid item xs={showLeaguesSecondaryList ? 6 : 12}>
-            <List>
-              {data &&
-                data.leagues.map(l => (
-                  <ListItem
-                    key={l._id}
-                    button
-                    onClick={e => {
-                      onLeagueClick(e, l);
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar alt="logo" />
-                    </ListItemAvatar>
-                    <ListItemText primary={l.name} secondary={l.country} />
-                  </ListItem>
-                ))}
-            </List>
-          </Grid>
-          {showLeaguesSecondaryList && (
-            <Grid item xs={6}>
-              <LeaguesList fetchPolicy={'cache-only'} />
+  render() {
+    const { localize, showLeaguesSecondaryList } = this.props;
+    const { isNewLeagueOpen, isLoading } = this.state;
+    return (
+      <>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={this.handleDrawerOpen}
+              edge="start"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              {localize('pages.home.title')}
+            </Typography>
+            <div className={'grow'} />
+            <IconButton
+              color="inherit"
+              aria-label="add league"
+              onClick={this.onAddClick}
+              edge="end"
+            >
+              <AddIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <LeagueForm
+          isOpen={isNewLeagueOpen}
+          onClose={this.onNewLeagueFormClose}
+          onLeagueSaved={this.onLeagueSaved}
+        />
+        {isLoading && <LinearProgress />}
+        <div className={'grow'}>
+          <Grid container spacing={1}>
+            <Grid item xs={showLeaguesSecondaryList ? 6 : 12}>
+              <Query<LeaguesQueryData>
+                query={LEAGUES_QUERY}
+                fetchPolicy="cache-and-network"
+                onCompleted={this.onQueryCompleted}
+              >
+                {({ data }) => (
+                  <List>
+                    {data &&
+                      data.leagues.map(l => (
+                        <ListItem
+                          key={l._id}
+                          button
+                          onClick={e => {
+                            this.onLeagueClick(e, l);
+                          }}
+                        >
+                          <ListItemAvatar>
+                            <Avatar alt="logo" />
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={l.name}
+                            secondary={l.country}
+                          />
+                        </ListItem>
+                      ))}
+                  </List>
+                )}
+              </Query>
             </Grid>
-          )}
-        </Grid>
-      </div>
-    </>
-  );
-};
+            {showLeaguesSecondaryList && (
+              <Grid item xs={6}>
+                <LeaguesList fetchPolicy={'cache-only'} />
+              </Grid>
+            )}
+          </Grid>
+        </div>
+      </>
+    );
+  }
+}
 
 export default withRouter(
   connect(

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { Query } from '@apollo/react-components';
 import { connect } from 'react-redux';
 import { actions } from './store';
 import {
@@ -31,11 +31,11 @@ const Startup: FunctionComponent<Props> = ({
     updateLanguages(data.languages);
   }
 
-  useQuery<LanguagesQueryData>(LANGUAGES_QUERY, {
-    onCompleted: onLanguagesQueryCompleted
-  });
-
-  return <>{children}</>;
+  return (
+    <Query query={LANGUAGES_QUERY} onCompleted={onLanguagesQueryCompleted}>
+      {() => <>{children}</>}
+    </Query>
+  );
 };
 
 export default connect(

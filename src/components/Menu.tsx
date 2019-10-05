@@ -24,6 +24,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const mapStateToProps = (state: RootState) => ({
   open: state.menu.open,
+  currentLanguageId: state.localization.languageId,
   languages: state.localization.languages,
   showLeaguesSecondaryList: state.application.showLeaguesSecondaryList,
   showLeaguesOnMenu: state.application.showLeaguesOnMenu,
@@ -55,6 +56,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 const Menu: FunctionComponent<Props> = ({
   open,
   localize,
+  currentLanguageId,
   languages,
   toggleMenu,
   updateLanguage,
@@ -99,6 +101,12 @@ const Menu: FunctionComponent<Props> = ({
         {languages.map(l => (
           <ListItem button key={l._id} onClick={e => onLanguageClick(e, l)}>
             <ListItemText primary={l.name} />
+            <ListItemIcon>
+              <Checkbox
+                edge="end"
+                checked={l.languageId === currentLanguageId}
+              />
+            </ListItemIcon>
           </ListItem>
         ))}
       </List>

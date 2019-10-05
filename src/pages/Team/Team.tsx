@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import { Query } from '@apollo/react-components';
 import { TEAM_QUERY, TeamQueryData } from '../../graphql/queries/Teams';
 import { withRouter, RouteComponentProps } from 'react-router';
 import AppBar from '@material-ui/core/AppBar';
@@ -16,6 +16,10 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { RootState, selectors } from '../../store';
 
+type State = {
+  isLoading: boolean;
+};
+
 const mapStateToProps = (state: RootState) => ({
   localize: (key: string) =>
     selectors.localization.localize(state.localization, key)
@@ -24,60 +28,82 @@ const mapStateToProps = (state: RootState) => ({
 type Props = ReturnType<typeof mapStateToProps> &
   RouteComponentProps<{ teamId: string }>;
 
-const Team: FunctionComponent<Props> = ({
-  match: {
-    params: { teamId }
-  },
-  history,
-  localize
-}) => {
-  const { loading, error, data } = useQuery<TeamQueryData>(TEAM_QUERY, {
-    variables: { teamId }
-  });
-  if (loading) return <LinearProgress />;
-  if (error) return <p>Error</p>;
-  if (data && data.team) {
-    const { team } = data;
-    const { league, players } = team;
+class Team extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isLoading: true
+    };
+  }
+
+  onQueryCompleted = () => {
+    this.setState({ isLoading: false });
+  };
+
+  render() {
+    const { isLoading } = this.state;
+    const {
+      history,
+      localize,
+      match: {
+        params: { teamId }
+      }
+    } = this.props;
     return (
-      <>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              aria-label="settings"
-              color="inherit"
-              edge="start"
-              onClick={() => {
-                league && history.push(`/league/${league._id}`);
-              }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-            <Typography variant="h6">{localize('pages.team.title')}</Typography>
-          </Toolbar>
-        </AppBar>
-        <List>
-          {players &&
-            players.map(p => (
-              <ListItem key={p._id}>
-                <ListItemAvatar>
-                  <Avatar alt="logo" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={p.name}
-                  secondary={
-                    p.position
-                      ? `${p.nationality}, ${p.position}`
-                      : p.nationality
-                  }
-                />
-              </ListItem>
-            ))}
-        </List>
-      </>
+      <Query<TeamQueryData>
+        query={TEAM_QUERY}
+        variables={{ teamId }}
+        onError={this.onQueryCompleted}
+        onCompleted={this.onQueryCompleted}
+      >
+        {({ data }) => (
+          <>
+            <AppBar position="static">
+              <Toolbar>
+                <IconButton
+                  aria-label="settings"
+                  color="inherit"
+                  edge="start"
+                  onClick={() => {
+                    data &&
+                      data.team &&
+                      data.team.league &&
+                      history.push(`/league/${data.team.league._id}`);
+                  }}
+                >
+                  <ArrowBackIcon />
+                </IconButton>
+                <Typography variant="h6">
+                  {localize('pages.team.title')}
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            {isLoading && <LinearProgress />}
+            <List>
+              {data &&
+                data.team &&
+                data.team.players &&
+                data.team.players.map(p => (
+                  <ListItem key={p._id}>
+                    <ListItemAvatar>
+                      <Avatar alt="logo" />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={p.name}
+                      secondary={
+                        p.position
+                          ? `${p.nationality}, ${p.position}`
+                          : p.nationality
+                      }
+                    />
+                  </ListItem>
+                ))}
+            </List>
+          </>
+        )}
+      </Query>
     );
   }
-  return <></>;
-};
+}
 
 export default withRouter(connect(mapStateToProps)(Team));

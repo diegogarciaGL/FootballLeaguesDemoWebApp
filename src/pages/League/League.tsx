@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import { Query } from '@apollo/react-components';
 import { TEAMS_QUERY, TeamsQueryData } from '../../graphql/queries/Teams';
 import { withRouter, RouteComponentProps } from 'react-router';
 import AppBar from '@material-ui/core/AppBar';
@@ -21,57 +21,88 @@ const mapStateToProps = (state: RootState) => ({
     selectors.localization.localize(state.localization, key)
 });
 
+type State = {
+  isLoading: boolean;
+};
+
 type Props = ReturnType<typeof mapStateToProps> &
   RouteComponentProps<{ leagueId: string }>;
 
-const League: FunctionComponent<Props> = ({
-  match: {
-    params: { leagueId }
-  },
-  localize,
-  history
-}) => {
-  const { loading, error, data } = useQuery<TeamsQueryData>(TEAMS_QUERY, {
-    variables: { leagueId }
-  });
-  if (loading) return <LinearProgress />;
-  if (error) return <p>Error</p>;
-  return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            aria-label="settings"
-            color="inherit"
-            edge="start"
-            onClick={() => {
-              history.push('/');
-            }}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6">{localize('pages.league.title')}</Typography>
-        </Toolbar>
-      </AppBar>
-      <List>
-        {data &&
-          data.teams.map(t => (
-            <ListItem
-              key={t._id}
-              button
+class League extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isLoading: false
+    };
+  }
+
+  onQueryCompleted = () => {
+    this.setState({ isLoading: false });
+  };
+
+  render() {
+    const {
+      match: {
+        params: { leagueId }
+      },
+      history,
+      localize
+    } = this.props;
+    const { isLoading } = this.state;
+    return (
+      <>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              aria-label="settings"
+              color="inherit"
+              edge="start"
               onClick={() => {
-                history.push(`/team/${t._id}`);
+                history.push('/');
               }}
             >
-              <ListItemAvatar>
-                <Avatar alt="logo" />
-              </ListItemAvatar>
-              <ListItemText primary={t.name} />
-            </ListItem>
-          ))}
-      </List>
-    </>
-  );
-};
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6">
+              {localize('pages.league.title')}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        {isLoading && <LinearProgress />}
+        <List>
+          <Query<TeamsQueryData>
+            query={TEAMS_QUERY}
+            variables={{ leagueId }}
+            onError={this.onQueryCompleted}
+            onCompleted={this.onQueryCompleted}
+          >
+            {({ data }) =>
+              data && data.teams ? (
+                <>
+                  {data.teams.map(t => (
+                    <ListItem
+                      key={t._id}
+                      button
+                      onClick={() => {
+                        history.push(`/team/${t._id}`);
+                      }}
+                    >
+                      <ListItemAvatar>
+                        <Avatar alt="logo" />
+                      </ListItemAvatar>
+                      <ListItemText primary={t.name} />
+                    </ListItem>
+                  ))}
+                </>
+              ) : (
+                <></>
+              )
+            }
+          </Query>
+        </List>
+      </>
+    );
+  }
+}
 
 export default withRouter(connect(mapStateToProps)(League));

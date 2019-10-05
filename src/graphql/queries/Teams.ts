@@ -11,7 +11,7 @@ const TEAMS_QUERY = gql`
 `;
 
 type TeamsQueryDataType = {
-  teams: Team[]
+  teams: Team[];
 };
 
 export type TeamsQueryData = TeamsQueryDataType;
@@ -40,7 +40,7 @@ const TEAM_QUERY = gql`
 `;
 
 type TeamQueryDataType = {
-  team: Team | null
+  team: Team | null;
 };
 
 export type TeamQueryData = TeamQueryDataType;
@@ -49,7 +49,4 @@ export type TeamQueryData = TeamQueryDataType;
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
-export {
-  TEAMS_QUERY,
-  TEAM_QUERY
-};
+export { TEAMS_QUERY, TEAM_QUERY };
