@@ -32,9 +32,13 @@ class Team extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isLoading: true
+      isLoading: false
     };
   }
+
+  componentDidMount = () => {
+    this.setState({ isLoading: true });
+  };
 
   onQueryCompleted = () => {
     this.setState({ isLoading: false });

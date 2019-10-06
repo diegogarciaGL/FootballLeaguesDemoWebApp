@@ -54,9 +54,13 @@ class Leagues extends Component<Props, State> {
     super(props);
     this.state = {
       isNewLeagueOpen: false,
-      isLoading: true
+      isLoading: false
     };
   }
+
+  componentDidMount = () => {
+    this.setState({ isLoading: true });
+  };
 
   onLeagueClick = (e: MouseEvent, league: League) => {
     e.stopPropagation();

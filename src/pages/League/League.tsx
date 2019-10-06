@@ -36,6 +36,10 @@ class League extends Component<Props, State> {
     };
   }
 
+  componentDidMount = () => {
+    this.setState({ isLoading: true });
+  };
+
   onQueryCompleted = () => {
     this.setState({ isLoading: false });
   };
