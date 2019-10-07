@@ -7,10 +7,12 @@ export const fetchLanguage = createAsyncAction(
   'language/FETCH_FAILURE'
 )<void, object, Error>();
 
-export const updateLanguage = createAction('language/UPDATE_LANGUAGE', resolve =>
-  (languageId: string) => resolve(languageId)
-)
+export const updateLanguage = createAction(
+  'language/UPDATE_LANGUAGE',
+  resolve => (languageId: string) => resolve(languageId)
+);
 
-export const updateLanguages = createAction('language/UPDATE_LANGUAGES', resolve =>
-  (languages: Language[]) => resolve(languages)
-)
+export const updateLanguages = createAction(
+  'language/UPDATE_LANGUAGES',
+  resolve => (languages: Language[]) => resolve(languages)
+);

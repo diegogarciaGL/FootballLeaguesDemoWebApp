@@ -1,15 +1,8 @@
-import React, {
-  FunctionComponent,
-  MouseEvent,
-  useState,
-  useEffect,
-  useRef
-} from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { RootState, selectors, actions } from '../../store';
 import { LEAGUES_QUERY, LeaguesQueryData } from '../../graphql/queries/Leagues';
-import { League } from '../../graphql/generated/types';
 import { withRouter, RouteComponentProps } from 'react-router';
 
 // UI components
@@ -57,16 +50,10 @@ const Leagues: FunctionComponent<Props> = ({
   showLeaguesSecondaryList
 }) => {
   const classes = useStyles();
-  const listMounted = useRef<boolean>(false);
   const [isNewLeagueOpen, setIsNewLeagueOpen] = useState(false);
-  const [loadLeaguesQuery, { loading, error, data }] = useLazyQuery<
-    LeaguesQueryData
-  >(LEAGUES_QUERY, { fetchPolicy: 'cache-and-network' });
-
-  const onLeagueClick = (e: MouseEvent, league: League) => {
-    e.stopPropagation();
-    history.push(`/league/${league._id}`);
-  };
+  const { loading, error, data } = useQuery<LeaguesQueryData>(LEAGUES_QUERY, {
+    fetchPolicy: 'cache-and-network'
+  });
 
   const handleDrawerOpen = () => {
     toggleMenu();
@@ -79,18 +66,6 @@ const Leagues: FunctionComponent<Props> = ({
   const onNewLeagueFormClose = () => {
     setIsNewLeagueOpen(false);
   };
-
-  const onLeagueSaved = () => {
-    loadLeaguesQuery();
-  };
-
-  useEffect(() => {
-    if (!listMounted.current) {
-      listMounted.current = true;
-      loadLeaguesQuery();
-      return;
-    }
-  });
 
   return (
     <>
@@ -118,11 +93,7 @@ const Leagues: FunctionComponent<Props> = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <LeagueForm
-        isOpen={isNewLeagueOpen}
-        onClose={onNewLeagueFormClose}
-        onLeagueSaved={onLeagueSaved}
-      />
+      <LeagueForm isOpen={isNewLeagueOpen} onClose={onNewLeagueFormClose} />
       {loading && <LinearProgress />}
       {!loading && error ? <p>Error</p> : <></>}
       <div className={classes.grow}>
@@ -134,8 +105,8 @@ const Leagues: FunctionComponent<Props> = ({
                   <ListItem
                     key={l._id}
                     button
-                    onClick={e => {
-                      onLeagueClick(e, l);
+                    onClick={() => {
+                      history.push(`/league/${l._id}`);
                     }}
                   >
                     <ListItemAvatar>

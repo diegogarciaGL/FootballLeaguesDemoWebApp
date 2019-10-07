@@ -9,7 +9,11 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { League } from '../../graphql/generated/types';
 import { useMutation } from '@apollo/react-hooks';
-import { NEW_LEAGUE, NewLeagueData } from '../../graphql/queries/Leagues';
+import {
+  LEAGUES_QUERY,
+  NEW_LEAGUE,
+  NewLeagueData
+} from '../../graphql/queries/Leagues';
 
 const mapStateToProps = (state: RootState) => ({
   localize: (key: string) =>
@@ -63,7 +67,8 @@ const LeagueForm: FC<Props> = ({
             name,
             country
           }
-        }
+        },
+        refetchQueries: [{ query: LEAGUES_QUERY }]
       });
     }
   };
