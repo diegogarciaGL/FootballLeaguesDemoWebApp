@@ -3,6 +3,8 @@ import { ApplicationState } from './types';
 const initialState: ApplicationState = {
   showLeaguesSecondaryList: false,
   showLeaguesOnMenu: false
+  // appBarColor: 'inherit',
+  // appBarColors: ['default', 'inherit', 'primary', 'secondary']
 };
 
 const ACTION_TYPES = {
