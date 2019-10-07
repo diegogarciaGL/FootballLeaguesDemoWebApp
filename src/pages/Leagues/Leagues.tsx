@@ -1,11 +1,5 @@
-import React, {
-  FunctionComponent,
-  useState,
-  useEffect,
-  useRef,
-  useContext
-} from 'react';
-import { useLazyQuery } from '@apollo/react-hooks';
+import React, { FunctionComponent, useState, useContext } from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import { LEAGUES_QUERY, LeaguesQueryData } from '../../graphql/queries/Leagues';
 import { withRouter, RouteComponentProps } from 'react-router';
 
@@ -48,11 +42,10 @@ const Leagues: FunctionComponent<Props> = ({ history }) => {
   const applicationContext = useContext(ApplicationContext);
   const { showLeaguesSecondaryList } = applicationContext;
   const classes = useStyles();
-  const listMounted = useRef<boolean>(false);
   const [isNewLeagueOpen, setIsNewLeagueOpen] = useState(false);
-  const [loadLeaguesQuery, { loading, error, data }] = useLazyQuery<
-    LeaguesQueryData
-  >(LEAGUES_QUERY, { fetchPolicy: 'cache-and-network' });
+  const { loading, error, data } = useQuery<LeaguesQueryData>(LEAGUES_QUERY, {
+    fetchPolicy: 'cache-and-network'
+  });
 
   const handleDrawerOpen = () => {
     toggleMenu();
@@ -65,18 +58,6 @@ const Leagues: FunctionComponent<Props> = ({ history }) => {
   const onNewLeagueFormClose = () => {
     setIsNewLeagueOpen(false);
   };
-
-  const onLeagueSaved = () => {
-    loadLeaguesQuery();
-  };
-
-  useEffect(() => {
-    if (!listMounted.current) {
-      listMounted.current = true;
-      loadLeaguesQuery();
-      return;
-    }
-  });
 
   return (
     <>
@@ -104,11 +85,7 @@ const Leagues: FunctionComponent<Props> = ({ history }) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <LeagueForm
-        isOpen={isNewLeagueOpen}
-        onClose={onNewLeagueFormClose}
-        onLeagueSaved={onLeagueSaved}
-      />
+      <LeagueForm isOpen={isNewLeagueOpen} onClose={onNewLeagueFormClose} />
       {loading && <LinearProgress />}
       {!loading && error ? <p>Error</p> : <></>}
       <div className={classes.grow}>

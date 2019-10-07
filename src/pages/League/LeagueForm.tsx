@@ -7,7 +7,11 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { League } from '../../graphql/generated/types';
 import { useMutation } from '@apollo/react-hooks';
-import { NEW_LEAGUE, NewLeagueData } from '../../graphql/queries/Leagues';
+import {
+  LEAGUES_QUERY,
+  NEW_LEAGUE,
+  NewLeagueData
+} from '../../graphql/queries/Leagues';
 
 // Contexts
 import { LocalizationContext } from '../../state/localization/context';
@@ -53,7 +57,8 @@ const LeagueForm: FC<Props> = ({ isOpen, onClose, league, onLeagueSaved }) => {
             name,
             country
           }
-        }
+        },
+        refetchQueries: [{ query: LEAGUES_QUERY }]
       });
     }
   };
