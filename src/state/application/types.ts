@@ -1,6 +1,8 @@
+import { PropTypes } from '@material-ui/core';
+
 export interface ApplicationState {
   showLeaguesSecondaryList: boolean;
   showLeaguesOnMenu: boolean;
-  // appBarColor: string;
-  // appBarColors: Array<string>;
+  appBarColor: PropTypes.Color;
+  appBarColors: Array<string>;
 }
