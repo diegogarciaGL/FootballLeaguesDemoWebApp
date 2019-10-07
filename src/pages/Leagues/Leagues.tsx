@@ -1,6 +1,5 @@
 import React, {
   FunctionComponent,
-  MouseEvent,
   useState,
   useEffect,
   useRef,
@@ -8,7 +7,6 @@ import React, {
 } from 'react';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { LEAGUES_QUERY, LeaguesQueryData } from '../../graphql/queries/Leagues';
-import { League } from '../../graphql/generated/types';
 import { withRouter, RouteComponentProps } from 'react-router';
 
 // Contexts
