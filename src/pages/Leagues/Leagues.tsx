@@ -56,11 +56,6 @@ const Leagues: FunctionComponent<Props> = ({ history }) => {
     LeaguesQueryData
   >(LEAGUES_QUERY, { fetchPolicy: 'cache-and-network' });
 
-  const onLeagueClick = (e: MouseEvent, league: League) => {
-    e.stopPropagation();
-    history.push(`/league/${league._id}`);
-  };
-
   const handleDrawerOpen = () => {
     toggleMenu();
   };
@@ -127,8 +122,8 @@ const Leagues: FunctionComponent<Props> = ({ history }) => {
                   <ListItem
                     key={l._id}
                     button
-                    onClick={e => {
-                      onLeagueClick(e, l);
+                    onClick={() => {
+                      history.push(`/league/${l._id}`);
                     }}
                   >
                     <ListItemAvatar>
