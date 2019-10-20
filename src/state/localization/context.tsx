@@ -6,17 +6,23 @@ import { useSelectors } from './selectors';
 import { LocalizationState } from './types';
 import { Language } from '../../graphql/generated/types';
 
-type ContextType = LocalizationState &
-  ReturnType<typeof useActions> &
-  ReturnType<typeof useSelectors>;
+type ContextType = {
+  state: LocalizationState;
+  actions: ReturnType<typeof useActions>;
+  selectors: ReturnType<typeof useSelectors>;
+};
 
 const initialContext: ContextType = {
-  ...initialState,
-  updateLanguage: (languageId: string) => languageId,
-  updateLanguages: (languages: Language[]) => languages,
-  localize: (key: string): string => key,
-  activeLanguage: () => undefined,
-  availableUnselectedLanguages: () => []
+  state: { ...initialState },
+  actions: {
+    updateLanguage: (languageId: string) => languageId,
+    updateLanguages: (languages: Language[]) => languages
+  },
+  selectors: {
+    localize: (key: string): string => key,
+    activeLanguage: () => undefined,
+    availableUnselectedLanguages: () => []
+  }
 };
 
 const LocalizationContext = createContext<ContextType>(initialContext);
@@ -30,7 +36,11 @@ const LocalizationProvider: FC<any> = ({ children }) => {
   const selectors = useSelectors(state);
   return (
     <LocalizationContext.Provider
-      value={{ ...state, ...actions, ...selectors }}
+      value={{
+        state: { ...state },
+        actions: { ...actions },
+        selectors: { ...selectors }
+      }}
     >
       {children}
     </LocalizationContext.Provider>

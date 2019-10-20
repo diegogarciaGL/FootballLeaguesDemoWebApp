@@ -25,7 +25,9 @@ type Props = {
 
 const LeagueForm: FC<Props> = ({ isOpen, onClose, league, onLeagueSaved }) => {
   const localizationContext = useContext(LocalizationContext);
-  const { localize } = localizationContext;
+  const {
+    selectors: { localize }
+  } = localizationContext;
   const [_id] = useState<string>(league ? league._id : '');
   const [name, setName] = useState<string>(league ? league.name : '');
   const [country, setCountry] = useState<string>(league ? league.country : '');

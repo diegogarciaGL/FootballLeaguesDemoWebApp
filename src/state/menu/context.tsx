@@ -3,11 +3,16 @@ import { initialState, reducer } from './reducer';
 import { useActions } from './actions';
 import { MenuState } from './types';
 
-type ContextType = MenuState & ReturnType<typeof useActions>;
+type ContextType = {
+  state: MenuState;
+  actions: ReturnType<typeof useActions>;
+};
 
 const initialContext: ContextType = {
-  ...initialState,
-  toggleMenu: () => {}
+  state: { ...initialState },
+  actions: {
+    toggleMenu: () => {}
+  }
 };
 
 const MenuContext = createContext<ContextType>(initialContext);
@@ -18,7 +23,9 @@ const MenuProvider: FC<any> = ({ children }) => {
   // Attach middleware to capture every dispatch
   const actions = useActions(state, dispatch);
   return (
-    <MenuContext.Provider value={{ ...state, ...actions }}>
+    <MenuContext.Provider
+      value={{ state: { ...state }, actions: { ...actions } }}
+    >
       {children}
     </MenuContext.Provider>
   );

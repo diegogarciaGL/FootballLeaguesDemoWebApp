@@ -16,7 +16,9 @@ const Startup: FC<any> = ({ children }) => {
   const mounted = useRef<boolean>(false);
   const languageId = store.get('languageId') || defaultLanguageId || '';
   const localizationContext = useContext(LocalizationContext);
-  const { updateLanguage, updateLanguages } = localizationContext;
+  const {
+    actions: { updateLanguage, updateLanguages }
+  } = localizationContext;
 
   useEffect(() => {
     // Loads initial language only if component has not been "mounted"

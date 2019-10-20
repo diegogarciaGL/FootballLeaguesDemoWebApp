@@ -26,7 +26,9 @@ const League: FC<Props> = ({
   history
 }) => {
   const localizationContext = useContext(LocalizationContext);
-  const { localize } = localizationContext;
+  const {
+    selectors: { localize }
+  } = localizationContext;
   const { loading, error, data } = useQuery<TeamsQueryData>(TEAMS_QUERY, {
     variables: { leagueId }
   });

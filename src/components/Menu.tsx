@@ -39,21 +39,21 @@ const Menu: FC = () => {
   // Localization context
   const localizationContext = useContext(LocalizationContext);
   const {
-    localize,
-    languages,
-    updateLanguage,
-    languageId: currentLanguageId
+    selectors: { localize },
+    actions: { updateLanguage },
+    state: { languages, languageId: currentLanguageId }
   } = localizationContext;
   // Menu context
   const menuContext = useContext(MenuContext);
-  const { open, toggleMenu } = menuContext;
+  const {
+    state: { open },
+    actions: { toggleMenu }
+  } = menuContext;
   // Application context
   const applicationContext = useContext(ApplicationContext);
   const {
-    showLeaguesOnMenu,
-    showLeaguesSecondaryList,
-    toggleLeaguesOnMenu,
-    toggleLeaguesSecondaryList
+    state: { showLeaguesOnMenu, showLeaguesSecondaryList },
+    actions: { toggleLeaguesOnMenu, toggleLeaguesSecondaryList }
   } = applicationContext;
   // Styles
   const classes = useStyles();

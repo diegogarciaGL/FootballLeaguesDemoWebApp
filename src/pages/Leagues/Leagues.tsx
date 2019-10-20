@@ -36,11 +36,17 @@ type Props = RouteComponentProps<{}>;
 
 const Leagues: FunctionComponent<Props> = ({ history }) => {
   const localizationContext = useContext(LocalizationContext);
-  const { localize } = localizationContext;
+  const {
+    selectors: { localize }
+  } = localizationContext;
   const menuContext = useContext(MenuContext);
-  const { toggleMenu } = menuContext;
+  const {
+    actions: { toggleMenu }
+  } = menuContext;
   const applicationContext = useContext(ApplicationContext);
-  const { showLeaguesSecondaryList } = applicationContext;
+  const {
+    state: { showLeaguesSecondaryList }
+  } = applicationContext;
   const classes = useStyles();
   const [isNewLeagueOpen, setIsNewLeagueOpen] = useState(false);
   const { loading, error, data } = useQuery<LeaguesQueryData>(LEAGUES_QUERY, {

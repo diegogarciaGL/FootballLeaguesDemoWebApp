@@ -3,12 +3,17 @@ import { initialState, reducer } from './reducer';
 import { useActions } from './actions';
 import { ApplicationState } from './types';
 
-type ContextType = ApplicationState & ReturnType<typeof useActions>;
+type ContextType = {
+  state: ApplicationState;
+  actions: ReturnType<typeof useActions>;
+};
 
 const initialContext: ContextType = {
-  ...initialState,
-  toggleLeaguesOnMenu: () => {},
-  toggleLeaguesSecondaryList: () => {}
+  state: { ...initialState },
+  actions: {
+    toggleLeaguesOnMenu: () => {},
+    toggleLeaguesSecondaryList: () => {}
+  }
 };
 
 const ApplicationContext = createContext<ContextType>(initialContext);
@@ -19,7 +24,9 @@ const ApplicationProvider: FC<any> = ({ children }) => {
   // Attach middleware to capture every dispatch
   const actions = useActions(state, dispatch);
   return (
-    <ApplicationContext.Provider value={{ ...state, ...actions }}>
+    <ApplicationContext.Provider
+      value={{ state: { ...state }, actions: { ...actions } }}
+    >
       {children}
     </ApplicationContext.Provider>
   );
