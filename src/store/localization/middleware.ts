@@ -4,8 +4,9 @@ import { ActionType, getType } from 'typesafe-actions';
 import * as localization from './actions';
 import store from 'store';
 
-export const fetchLanguageMiddleware: Middleware<{}, LocalizationState> = ({ getState }) => next => async (action: ActionType<typeof localization>) => {
-
+export const fetchLanguageMiddleware: Middleware<{}, LocalizationState> = ({
+  getState
+}) => next => async (action: ActionType<typeof localization>) => {
   next(action);
 
   if (action.type !== getType(localization.updateLanguage)) {
@@ -20,8 +21,7 @@ export const fetchLanguageMiddleware: Middleware<{}, LocalizationState> = ({ get
     const language = await response.json();
     next(localization.fetchLanguage.success(language));
     store.set('languageId', action.payload);
-  }
-  catch (e) {
+  } catch (e) {
     next(localization.fetchLanguage.failure(e));
   }
-}
+};
