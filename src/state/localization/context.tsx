@@ -34,14 +34,13 @@ const LocalizationProvider: FC<any> = ({ children }) => {
   const enhancedDispatch = applyMiddleware(dispatch);
   const actions = useActions(state, enhancedDispatch);
   const selectors = useSelectors(state);
+  const contextValue = {
+    state: { ...state },
+    actions: { ...actions },
+    selectors: { ...selectors }
+  };
   return (
-    <LocalizationContext.Provider
-      value={{
-        state: { ...state },
-        actions: { ...actions },
-        selectors: { ...selectors }
-      }}
-    >
+    <LocalizationContext.Provider value={contextValue}>
       {children}
     </LocalizationContext.Provider>
   );

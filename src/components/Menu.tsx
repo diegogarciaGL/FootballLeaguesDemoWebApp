@@ -92,13 +92,12 @@ const Menu: FC = () => {
         {languages.map(l => (
           <ListItem button key={l._id} onClick={e => onLanguageClick(e, l)}>
             <ListItemText primary={l.name} />
-            {l.languageId === currentLanguageId ? (
-              <ListItemIcon>
-                <Checkbox edge="end" checked={true} />
-              </ListItemIcon>
-            ) : (
-              <></>
-            )}
+            <ListItemIcon>
+              <Checkbox
+                edge="end"
+                checked={l.languageId === currentLanguageId}
+              />
+            </ListItemIcon>
           </ListItem>
         ))}
       </List>
