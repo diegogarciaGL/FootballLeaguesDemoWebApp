@@ -1,16 +1,12 @@
-import React, {
-  FunctionComponent,
-  MouseEvent,
-  useState,
-  useEffect,
-  useRef
-} from 'react';
-import { connect } from 'react-redux';
-import { useLazyQuery } from '@apollo/react-hooks';
-import { RootState, selectors, actions } from '../../store';
+import React, { FunctionComponent, useState, useContext } from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import { LEAGUES_QUERY, LeaguesQueryData } from '../../graphql/queries/Leagues';
-import { League } from '../../graphql/generated/types';
 import { withRouter, RouteComponentProps } from 'react-router';
+
+// Contexts
+import { LocalizationContext } from '../../state/localization/context';
+import { MenuContext } from '../../state/menu/context';
+import { ApplicationContext } from '../../state/application/context';
 
 // UI components
 import AppBar from '@material-ui/core/AppBar';
@@ -36,37 +32,26 @@ import AddIcon from '@material-ui/icons/Add';
 // Styles
 import useStyles from './LeaguesStyles';
 
-const mapStateToProps = (state: RootState) => ({
-  showLeaguesSecondaryList: state.application.showLeaguesSecondaryList,
-  localize: (key: string) =>
-    selectors.localization.localize(state.localization, key)
-});
+type Props = RouteComponentProps<{}>;
 
-const mapDispatchToProps = {
-  toggleMenu: () => actions.menu.toggleMenu()
-};
-
-type Props = ReturnType<typeof mapStateToProps> &
-  RouteComponentProps<{}> &
-  typeof mapDispatchToProps;
-
-const Leagues: FunctionComponent<Props> = ({
-  history,
-  localize,
-  toggleMenu,
-  showLeaguesSecondaryList
-}) => {
+const Leagues: FunctionComponent<Props> = ({ history }) => {
+  const localizationContext = useContext(LocalizationContext);
+  const {
+    selectors: { localize }
+  } = localizationContext;
+  const menuContext = useContext(MenuContext);
+  const {
+    actions: { toggleMenu }
+  } = menuContext;
+  const applicationContext = useContext(ApplicationContext);
+  const {
+    state: { showLeaguesSecondaryList }
+  } = applicationContext;
   const classes = useStyles();
-  const listMounted = useRef<boolean>(false);
   const [isNewLeagueOpen, setIsNewLeagueOpen] = useState(false);
-  const [loadLeaguesQuery, { loading, error, data }] = useLazyQuery<
-    LeaguesQueryData
-  >(LEAGUES_QUERY, { fetchPolicy: 'cache-and-network' });
-
-  const onLeagueClick = (e: MouseEvent, league: League) => {
-    e.stopPropagation();
-    history.push(`/league/${league._id}`);
-  };
+  const { loading, error, data } = useQuery<LeaguesQueryData>(LEAGUES_QUERY, {
+    fetchPolicy: 'cache-and-network'
+  });
 
   const handleDrawerOpen = () => {
     toggleMenu();
@@ -79,18 +64,6 @@ const Leagues: FunctionComponent<Props> = ({
   const onNewLeagueFormClose = () => {
     setIsNewLeagueOpen(false);
   };
-
-  const onLeagueSaved = () => {
-    loadLeaguesQuery();
-  };
-
-  useEffect(() => {
-    if (!listMounted.current) {
-      listMounted.current = true;
-      loadLeaguesQuery();
-      return;
-    }
-  });
 
   return (
     <>
@@ -118,11 +91,7 @@ const Leagues: FunctionComponent<Props> = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <LeagueForm
-        isOpen={isNewLeagueOpen}
-        onClose={onNewLeagueFormClose}
-        onLeagueSaved={onLeagueSaved}
-      />
+      <LeagueForm isOpen={isNewLeagueOpen} onClose={onNewLeagueFormClose} />
       {loading && <LinearProgress />}
       {!loading && error ? <p>Error</p> : <></>}
       <div className={classes.grow}>
@@ -134,8 +103,8 @@ const Leagues: FunctionComponent<Props> = ({
                   <ListItem
                     key={l._id}
                     button
-                    onClick={e => {
-                      onLeagueClick(e, l);
+                    onClick={() => {
+                      history.push(`/league/${l._id}`);
                     }}
                   >
                     <ListItemAvatar>
@@ -157,9 +126,4 @@ const Leagues: FunctionComponent<Props> = ({
   );
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Leagues)
-);
+export default withRouter(Leagues);

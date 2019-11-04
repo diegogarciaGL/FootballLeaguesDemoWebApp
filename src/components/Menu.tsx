@@ -1,8 +1,11 @@
-import React, { FunctionComponent, MouseEvent } from 'react';
-import { RootState, selectors, actions } from '../store';
-import { connect } from 'react-redux';
+import React, { FC, MouseEvent, useContext } from 'react';
 import { Language } from '../graphql/generated/types';
 import { makeStyles } from '@material-ui/core/styles';
+
+// Contexts
+import { LocalizationContext } from '../state/localization/context';
+import { MenuContext } from '../state/menu/context';
+import { ApplicationContext } from '../state/application/context';
 
 // UI components
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -22,24 +25,6 @@ import LeaguesList from './LeaguesList';
 // Icons
 import CloseIcon from '@material-ui/icons/Close';
 
-const mapStateToProps = (state: RootState) => ({
-  open: state.menu.open,
-  languages: state.localization.languages,
-  showLeaguesSecondaryList: state.application.showLeaguesSecondaryList,
-  showLeaguesOnMenu: state.application.showLeaguesOnMenu,
-  localize: (key: string) =>
-    selectors.localization.localize(state.localization, key)
-});
-
-const mapDispatchToProps = {
-  toggleMenu: () => actions.menu.toggleMenu(),
-  toggleLeaguesSecondaryList: () =>
-    actions.application.toggleLeaguesSecondaryList(),
-  toggleLeaguesOnMenu: () => actions.application.toggleLeaguesOnMenu(),
-  updateLanguage: (languageId: string) =>
-    actions.localization.updateLanguage(languageId)
-};
-
 const useStyles = makeStyles({
   list: {
     width: 250
@@ -50,19 +35,27 @@ const useStyles = makeStyles({
   }
 });
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
-
-const Menu: FunctionComponent<Props> = ({
-  open,
-  localize,
-  languages,
-  toggleMenu,
-  updateLanguage,
-  showLeaguesSecondaryList,
-  toggleLeaguesSecondaryList,
-  showLeaguesOnMenu,
-  toggleLeaguesOnMenu
-}) => {
+const Menu: FC = () => {
+  // Localization context
+  const localizationContext = useContext(LocalizationContext);
+  const {
+    selectors: { localize },
+    actions: { updateLanguage },
+    state: { languages, languageId: currentLanguageId }
+  } = localizationContext;
+  // Menu context
+  const menuContext = useContext(MenuContext);
+  const {
+    state: { open },
+    actions: { toggleMenu }
+  } = menuContext;
+  // Application context
+  const applicationContext = useContext(ApplicationContext);
+  const {
+    state: { showLeaguesOnMenu, showLeaguesSecondaryList },
+    actions: { toggleLeaguesOnMenu, toggleLeaguesSecondaryList }
+  } = applicationContext;
+  // Styles
   const classes = useStyles();
 
   const handleDrawerClose = () => {
@@ -99,6 +92,12 @@ const Menu: FunctionComponent<Props> = ({
         {languages.map(l => (
           <ListItem button key={l._id} onClick={e => onLanguageClick(e, l)}>
             <ListItemText primary={l.name} />
+            <ListItemIcon>
+              <Checkbox
+                edge="end"
+                checked={l.languageId === currentLanguageId}
+              />
+            </ListItemIcon>
           </ListItem>
         ))}
       </List>
@@ -135,7 +134,4 @@ const Menu: FunctionComponent<Props> = ({
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Menu);
+export default Menu;

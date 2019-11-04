@@ -1,31 +1,32 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC, useContext, useEffect, useRef } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { connect } from 'react-redux';
-import { actions } from './store';
 import {
   LANGUAGES_QUERY,
   LanguagesQueryData
 } from './graphql/queries/Languages';
-import { Language } from './graphql/generated/types';
 import store from 'store';
+
+// Contexts
+import { LocalizationContext } from './state/localization/context';
 
 const { REACT_APP_DEFAULT_LANGUAGE_ID: defaultLanguageId } = process.env;
 
-const mapDispatchToProps = {
-  updateLanguage: (languageId: string) =>
-    actions.localization.updateLanguage(languageId),
-  updateLanguages: (languages: Language[]) =>
-    actions.localization.updateLanguages(languages)
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Startup: FC<any> = ({ children }) => {
+  const mounted = useRef<boolean>(false);
+  const languageId = store.get('languageId') || defaultLanguageId || '';
+  const localizationContext = useContext(LocalizationContext);
+  const {
+    actions: { updateLanguage, updateLanguages }
+  } = localizationContext;
 
-type Props = typeof mapDispatchToProps;
-
-const Startup: FunctionComponent<Props> = ({
-  children,
-  updateLanguage,
-  updateLanguages
-}) => {
-  updateLanguage(store.get('languageId') || defaultLanguageId || '');
+  useEffect(() => {
+    // Loads initial language only if component has not been "mounted"
+    if (!mounted.current) {
+      updateLanguage(languageId);
+      mounted.current = true;
+    }
+  });
 
   function onLanguagesQueryCompleted(data: LanguagesQueryData): void {
     updateLanguages(data.languages);
@@ -38,7 +39,4 @@ const Startup: FunctionComponent<Props> = ({
   return <>{children}</>;
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Startup);
+export default Startup;

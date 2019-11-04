@@ -1,6 +1,4 @@
-import React, { FC, useState } from 'react';
-import { connect } from 'react-redux';
-import { RootState, selectors } from '../../store';
+import React, { FC, useState, useContext } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,29 +7,27 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { League } from '../../graphql/generated/types';
 import { useMutation } from '@apollo/react-hooks';
-import { NEW_LEAGUE, NewLeagueData } from '../../graphql/queries/Leagues';
+import {
+  LEAGUES_QUERY,
+  NEW_LEAGUE,
+  NewLeagueData
+} from '../../graphql/queries/Leagues';
 
-const mapStateToProps = (state: RootState) => ({
-  localize: (key: string) =>
-    selectors.localization.localize(state.localization, key)
-});
+// Contexts
+import { LocalizationContext } from '../../state/localization/context';
 
-type ParamProps = {
+type Props = {
   isOpen: boolean;
   onClose?: () => void;
   onLeagueSaved?: (league: League) => void;
   league?: League;
 };
 
-type Props = ParamProps & ReturnType<typeof mapStateToProps>;
-
-const LeagueForm: FC<Props> = ({
-  isOpen,
-  onClose,
-  localize,
-  league,
-  onLeagueSaved
-}) => {
+const LeagueForm: FC<Props> = ({ isOpen, onClose, league, onLeagueSaved }) => {
+  const localizationContext = useContext(LocalizationContext);
+  const {
+    selectors: { localize }
+  } = localizationContext;
   const [_id] = useState<string>(league ? league._id : '');
   const [name, setName] = useState<string>(league ? league.name : '');
   const [country, setCountry] = useState<string>(league ? league.country : '');
@@ -63,7 +59,8 @@ const LeagueForm: FC<Props> = ({
             name,
             country
           }
-        }
+        },
+        refetchQueries: [{ query: LEAGUES_QUERY }]
       });
     }
   };
@@ -112,4 +109,4 @@ const LeagueForm: FC<Props> = ({
   );
 };
 
-export default connect(mapStateToProps)(LeagueForm);
+export default LeagueForm;

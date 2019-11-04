@@ -1,5 +1,4 @@
-import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
+import React, { FC, useContext } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { TEAMS_QUERY, TeamsQueryData } from '../../graphql/queries/Teams';
 import { withRouter, RouteComponentProps } from 'react-router';
@@ -14,23 +13,22 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { RootState, selectors } from '../../store';
 
-const mapStateToProps = (state: RootState) => ({
-  localize: (key: string) =>
-    selectors.localization.localize(state.localization, key)
-});
+// Contexts
+import { LocalizationContext } from '../../state/localization/context';
 
-type Props = ReturnType<typeof mapStateToProps> &
-  RouteComponentProps<{ leagueId: string }>;
+type Props = RouteComponentProps<{ leagueId: string }>;
 
-const League: FunctionComponent<Props> = ({
+const League: FC<Props> = ({
   match: {
     params: { leagueId }
   },
-  localize,
   history
 }) => {
+  const localizationContext = useContext(LocalizationContext);
+  const {
+    selectors: { localize }
+  } = localizationContext;
   const { loading, error, data } = useQuery<TeamsQueryData>(TEAMS_QUERY, {
     variables: { leagueId }
   });
@@ -74,4 +72,4 @@ const League: FunctionComponent<Props> = ({
   );
 };
 
-export default withRouter(connect(mapStateToProps)(League));
+export default withRouter(League);
